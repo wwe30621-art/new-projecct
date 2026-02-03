@@ -58,7 +58,10 @@ async function setRole(userId: number, role: Role) {
     // ? ????????? users ???????
     const idx = users.value.findIndex((u) => u.id === userId);
     if (idx !== -1) {
-      users.value[idx] = { ...users.value[idx], role };
+      const current = users.value[idx];
+      if (current) {
+        users.value[idx] = { ...current, role };
+      }
     }
 
     msg.value = `Updated user ${userId} -> ${role}`;
@@ -164,14 +167,14 @@ function logout() {
       <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button
           @click="setRole(u.id, 'admin')"
-          :disabled="loading || u.role === 'admin' || (auth.me && u.id === auth.me.id)"
+          :disabled="loading || u.role === 'admin' || auth.me?.id === u.id"
         >
            admin
         </button>
 
         <button
           @click="setRole(u.id, 'user')"
-          :disabled="loading || u.role === 'user' || (auth.me && u.id === auth.me.id)"
+          :disabled="loading || u.role === 'user' || auth.me?.id === u.id"
         >
            user
         </button>
